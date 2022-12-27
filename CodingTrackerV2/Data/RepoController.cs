@@ -12,7 +12,24 @@ namespace CodingTrackerV2.Data
 
         internal void Delete(int idToDelete)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                using (var tableCmd = connection.CreateCommand())
+                {
+                    connection.Open();
+
+                    tableCmd.CommandText = $"DELETE FROM coding (id) WHERE id = {idToDelete}";
+
+                    int rowsAffected = tableCmd.ExecuteNonQuery();
+                    if (rowsAffected == 0)
+                    {
+                        Console.WriteLine($"Record with ID {idToDelete} was not found");
+                    } else
+                    {
+                        Console.WriteLine($"Record with ID {idToDelete} was deleted");
+                    }
+                }
+            }        
         }
 
         internal void Get()
