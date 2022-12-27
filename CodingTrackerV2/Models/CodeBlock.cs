@@ -2,7 +2,8 @@
 {
     internal class CodeBlock
     {
-        private string date;
-        private string duration;
+        public int Id { get; set; }
+        public string Date { get; set; }
+        public string Duration { get; set; }
     }
 }

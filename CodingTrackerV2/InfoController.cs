@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CodingTrackerV2.Data;
+using CodingTrackerV2.Models;
+using System;
 using System.Globalization;
 
 namespace CodingTrackerV2
@@ -35,16 +37,16 @@ namespace CodingTrackerV2
                         Environment.Exit(0);
                         break;
                     case "2":
-                        RecordView();
+                        RecordView(); // NOT IMPLEMENTED
                         break;
                     case "3":
                         RecordAdd();
                         break;
                     case "4":
-                        RecordDelete();
+                        RecordDelete(); // NOT IMPLEMENTED
                         break;
                     case "5":
-                        RecordUpdate();
+                        RecordUpdate(); // NOT IMPLEMENTED
                         break;
                     default:
                         Console.WriteLine("\nInvalid command. Please try again.");
@@ -105,6 +107,7 @@ namespace CodingTrackerV2
 
         private void RecordAdd()
         {
+            RepoController repo = new RepoController();
             Console.WriteLine("\nPlease enter the date (format: dd-mm-yy). If nothing is entered, the current system time will be logged: ");
             string dateInput = GetUserInput("Get Date");
 
@@ -113,7 +116,13 @@ namespace CodingTrackerV2
             Console.WriteLine("\nPlease enter the duration of the session (format hh:mm). Enter 0 to return to menu.");
             string durationInput = GetUserInput("Get Duration");
 
-            Console.WriteLine($"\nAdded {durationInput}");
+            // Console.WriteLine($"\nAdded {durationInput}"); // DEBUG
+
+            CodeBlock codeBlock = new CodeBlock();
+            codeBlock.Date = dateInput;
+            codeBlock.Duration = durationInput;
+
+            repo.Post(codeBlock);
         }
 
         private void RecordView()
