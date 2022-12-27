@@ -38,6 +38,9 @@ namespace CodingTrackerV2
                         break;
                     case "2":
                         RecordView(); // NOT IMPLEMENTED
+                        Console.WriteLine("Press any key to return to main menu");
+                        Console.ReadLine();
+                        Console.Clear();
                         break;
                     case "3":
                         RecordAdd();
@@ -90,6 +93,13 @@ namespace CodingTrackerV2
 
                     return userInput;
                     break;
+                case "Get Id":
+                    while (!Int32.TryParse(userInput, out _) || string.IsNullOrEmpty(userInput) || Int32.Parse(userInput) < 0)
+                    {
+                        Console.WriteLine("\nInvalid input. Please enter a valid integer");
+                    }
+                    return userInput;
+                    break;
             }
 
             return "something went wrong...";
@@ -102,7 +112,13 @@ namespace CodingTrackerV2
 
         private void RecordDelete()
         {
-            throw new NotImplementedException();
+            RepoController repo = new RepoController();
+            RecordView(); // May need to change when filter functionality is added
+
+            Console.WriteLine("\nPlease enter the id you wish to delete: ");
+            int idToDelete = Int32.Parse(GetUserInput("Get Id"));
+
+            repo.Delete(idToDelete);
         }
 
         private void RecordAdd()
@@ -127,7 +143,10 @@ namespace CodingTrackerV2
 
         private void RecordView()
         {
-            throw new NotImplementedException();
+            // REPO READ()
+            RepoController repo = new RepoController();
+
+            repo.Get();
         }
     }
 }
