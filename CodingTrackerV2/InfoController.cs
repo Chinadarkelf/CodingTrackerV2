@@ -47,7 +47,7 @@ namespace CodingTrackerV2
                         RecordUpdate();
                         break;
                     default:
-                        Console.WriteLine("Invalid command. Please try again.");
+                        Console.WriteLine("\nInvalid command. Please try again.");
                         break;
                 }
             }
@@ -63,11 +63,29 @@ namespace CodingTrackerV2
                     return userInput;
                     break;
                 case "Get Date":
+                    if (userInput.Equals(""))
+                    {
+                        // "d" returns short date string value (no time included)
+                        return DateTime.Today.ToString("d");
+                    }
                     while (!DateTime.TryParseExact(userInput, "dd-mm-yy", new CultureInfo("en-US"), DateTimeStyles.None, out _))
                     {
-                        Console.WriteLine("Incorrect format, try again");
+                        Console.WriteLine("\nIncorrect format, try again");
                         userInput = Console.ReadLine();
                     }
+                    return userInput;
+                    break;
+                case "Get Duration":
+                    if (userInput.Equals("0")) ShowMenu();
+
+                    while (!TimeSpan.TryParseExact(userInput, "h\\:mm", CultureInfo.InvariantCulture, out _))
+                    {
+                        Console.WriteLine("\nDuration invalid, please try again. Format hh:mm, or type 0 to return to menu");
+                        userInput= Console.ReadLine();
+
+                        if (userInput.Equals("0")) ShowMenu();
+                    }
+
                     return userInput;
                     break;
             }
@@ -87,9 +105,15 @@ namespace CodingTrackerV2
 
         private void RecordAdd()
         {
-            Console.WriteLine("Please enter the date (format: dd-mm-yy). If nothing is entered, the current system time will be logged: ");
-
+            Console.WriteLine("\nPlease enter the date (format: dd-mm-yy). If nothing is entered, the current system time will be logged: ");
             string dateInput = GetUserInput("Get Date");
+
+            // Console.WriteLine($"Added {dateInput}"); // DEBUG
+
+            Console.WriteLine("\nPlease enter the duration of the session (format hh:mm). Enter 0 to return to menu.");
+            string durationInput = GetUserInput("Get Duration");
+
+            Console.WriteLine($"\nAdded {durationInput}");
         }
 
         private void RecordView()
