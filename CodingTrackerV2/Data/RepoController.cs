@@ -18,15 +18,19 @@ namespace CodingTrackerV2.Data
                 {
                     connection.Open();
 
-                    tableCmd.CommandText = $"DELETE FROM coding (id) WHERE id = {idToDelete}";
+                    tableCmd.CommandText = $"DELETE FROM coding WHERE Id = {idToDelete}";
 
                     int rowsAffected = tableCmd.ExecuteNonQuery();
-                    if (rowsAffected == 0)
+                    if (rowsAffected > 0)
                     {
-                        Console.WriteLine($"Record with ID {idToDelete} was not found");
+                        Console.WriteLine($"Succesfully deleted Record with Id {idToDelete}");
+                        Console.WriteLine("\nPress any key to return to main menu");
+                        Console.ReadLine();
                     } else
                     {
-                        Console.WriteLine($"Record with ID {idToDelete} was deleted");
+                        Console.WriteLine($"Record with ID {idToDelete} was not found");
+                        Console.WriteLine("\nPress any key to return to main menu");
+                        Console.ReadLine();
                     }
                 }
             }        

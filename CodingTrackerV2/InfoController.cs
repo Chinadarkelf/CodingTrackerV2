@@ -14,6 +14,7 @@ namespace CodingTrackerV2
         {
             while (!closeApp)
             {
+                Console.Clear();
                 Console.WriteLine(
                 @"|======== Coding Tracker ========|
 |                                |
@@ -37,7 +38,7 @@ namespace CodingTrackerV2
                         Environment.Exit(0);
                         break;
                     case "2":
-                        RecordView(); // NOT IMPLEMENTED
+                        RecordView();
                         Console.WriteLine("Press any key to return to main menu");
                         Console.ReadLine();
                         Console.Clear();
@@ -46,7 +47,7 @@ namespace CodingTrackerV2
                         RecordAdd();
                         break;
                     case "4":
-                        RecordDelete(); // NOT IMPLEMENTED
+                        RecordDelete();
                         break;
                     case "5":
                         RecordUpdate(); // NOT IMPLEMENTED
