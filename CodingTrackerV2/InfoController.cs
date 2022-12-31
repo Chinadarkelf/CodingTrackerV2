@@ -108,7 +108,50 @@ namespace CodingTrackerV2
 
         private void RecordUpdate()
         {
-            throw new NotImplementedException();
+            CodeBlock codeBlock = new CodeBlock();
+            RepoController repo = new RepoController();
+            RecordView();
+
+            Console.WriteLine("\nPlease enter the id of the record you wish to update");
+            int idToUpdate = Int32.Parse(GetUserInput("Get Id"));
+
+            Console.WriteLine("\nWhich column would you like to update? Type 'd' for date, 't' for duration, 's' for all, or 'q' to exit to main menu: ");
+            string choice = Console.ReadLine();
+
+            string dateInput = "";
+            string durationInput = "";
+
+            switch (choice)
+            {
+                case "d":
+                    Console.WriteLine("\nPlease enter the date (format: dd-mm-yy). If nothing is entered, the current system time will be logged: ");
+                    dateInput = GetUserInput("Get Date");
+
+                    codeBlock.Date = dateInput;
+                    repo.Update(idToUpdate, codeBlock, choice);
+                    break;
+                case "t":
+                    Console.WriteLine("\nPlease enter the duration of the session (format hh:mm). Enter 0 to return to menu.");
+                    durationInput = GetUserInput("Get Duration");
+
+                    codeBlock.Duration = durationInput;
+                    repo.Update(idToUpdate, codeBlock, choice);
+                    break;
+                case "s":
+                    Console.WriteLine("\nPlease enter the date (format: dd-mm-yy). If nothing is entered, the current system time will be logged: ");
+                    dateInput = GetUserInput("Get Date");
+
+                    Console.WriteLine("\nPlease enter the duration of the session (format hh:mm). Enter 0 to return to menu.");
+                    durationInput = GetUserInput("Get Duration");
+
+                    codeBlock.Date = dateInput;
+                    codeBlock.Duration = durationInput;
+                    repo.Update(idToUpdate, codeBlock, choice);
+                    break;
+                case "q":
+                    break;
+            }
+
         }
 
         private void RecordDelete()

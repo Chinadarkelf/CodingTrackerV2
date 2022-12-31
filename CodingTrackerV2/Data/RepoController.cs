@@ -83,6 +83,53 @@ namespace CodingTrackerV2.Data
             }
         }
 
+        internal void Update(int idToUpdate, CodeBlock codeBlock, string request)
+        {
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                using (var tableCmd = connection.CreateCommand())
+                {
+                    connection.Open();
+
+                    switch (request)
+                    {
+                        case "d":
+                            tableCmd.CommandText =
+                                $@"UPDATE coding
+                                   SET date = '{codeBlock.Date}'
+                                   WHERE Id = {idToUpdate}";
+                            break;
+                        case "t":
+                            tableCmd.CommandText =
+                                $@"UPDATE coding
+                                   SET duration = '{codeBlock.Duration}'
+                                   WHERE Id = {idToUpdate}";
+                            break;
+                        case "s":
+                            tableCmd.CommandText =
+                                $@"UPDATE coding
+                                SET date = '{codeBlock.Date}',
+                                    duration = '{codeBlock.Duration}'
+                                WHERE Id = {idToUpdate}";
+                            break;
+                    }
+                    int rowsAffected = tableCmd.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        Console.WriteLine($"Updated Record with Id {idToUpdate}.");
+                        Console.WriteLine("Press any key to return to menu");
+                        Console.ReadLine();
+                    } else
+                    {
+                        Console.WriteLine($"Record with Id {idToUpdate} was not found.");
+                        Console.WriteLine("Press any key to return to menu");
+                        Console.ReadLine();
+                    }
+                }
+            }
+        }
+
 
     }
 }
