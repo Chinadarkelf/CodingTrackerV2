@@ -56,6 +56,7 @@
     <Compile Include="DBManager.cs" />
     <Compile Include="InfoController.cs" />
     <Compile Include="Models\CodeBlock.cs" />
+    <Compile Include="Models\GoalBlock.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

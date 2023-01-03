@@ -1,6 +1,7 @@
 ﻿using CodingTrackerV2.Data;
 using CodingTrackerV2.Models;
 using System;
+using System.Configuration;
 using System.Globalization;
 
 namespace CodingTrackerV2
@@ -10,6 +11,8 @@ namespace CodingTrackerV2
         // Handle codeBlock objects with Add, Update, Read, Delete methods -- auto/manual overloads
 
         bool closeApp = false;
+        string trackerString = ConfigurationManager.AppSettings.Get("connectionString");
+        string goalsString = ConfigurationManager.AppSettings.Get("connectionStringGoals");
         internal void ShowMenu()
         {
             while (!closeApp)
@@ -25,6 +28,7 @@ namespace CodingTrackerV2
 |==   3. Add a Record          ==|
 |==   4. Delete a Record       ==|
 |==   5. Update a Record       ==|
+|==   6. Current Goals         ==|
 |==                            ==|
 |================================|");
 
@@ -38,25 +42,33 @@ namespace CodingTrackerV2
                         Environment.Exit(0);
                         break;
                     case "2":
-                        RecordView();
+                        RecordView(trackerString);
                         Console.WriteLine("Press any key to return to main menu");
                         Console.ReadLine();
                         Console.Clear();
                         break;
                     case "3":
-                        RecordAdd();
+                        RecordAdd(trackerString);
                         break;
                     case "4":
-                        RecordDelete();
+                        RecordDelete(trackerString);
                         break;
                     case "5":
-                        RecordUpdate(); // NOT IMPLEMENTED
+                        RecordUpdate(trackerString);
+                        break;
+                    case "6":
+                        ViewGoals();
                         break;
                     default:
                         Console.WriteLine("\nInvalid command. Please try again.");
                         break;
                 }
             }
+        }
+
+        private void ViewGoals()
+        {
+            Console.Clear();
         }
 
         private string GetUserInput(string request)
@@ -106,11 +118,11 @@ namespace CodingTrackerV2
             return "something went wrong...";
         }
 
-        private void RecordUpdate()
+        private void RecordUpdate(string connectionString)
         {
             CodeBlock codeBlock = new CodeBlock();
-            RepoController repo = new RepoController();
-            RecordView();
+            RepoController repo = new RepoController(connectionString);
+            RecordView(connectionString);
 
             Console.WriteLine("\nPlease enter the id of the record you wish to update");
             int idToUpdate = Int32.Parse(GetUserInput("Get Id"));
@@ -154,10 +166,10 @@ namespace CodingTrackerV2
 
         }
 
-        private void RecordDelete()
+        private void RecordDelete(string connectionString)
         {
-            RepoController repo = new RepoController();
-            RecordView(); // May need to change when filter functionality is added
+            RepoController repo = new RepoController(connectionString);
+            RecordView(connectionString);
 
             Console.WriteLine("\nPlease enter the id you wish to delete: ");
             int idToDelete = Int32.Parse(GetUserInput("Get Id"));
@@ -165,9 +177,9 @@ namespace CodingTrackerV2
             repo.Delete(idToDelete);
         }
 
-        private void RecordAdd()
+        private void RecordAdd(string connectionString)
         {
-            RepoController repo = new RepoController();
+            RepoController repo = new RepoController(connectionString);
             Console.WriteLine("\nPlease enter the date (format: dd-mm-yy). If nothing is entered, the current system time will be logged: ");
             string dateInput = GetUserInput("Get Date");
 
@@ -185,10 +197,10 @@ namespace CodingTrackerV2
             repo.Post(codeBlock);
         }
 
-        private void RecordView()
+        private void RecordView(string connectionString)
         {
             // REPO READ()
-            RepoController repo = new RepoController();
+            RepoController repo = new RepoController(connectionString);
 
             repo.Get();
         }

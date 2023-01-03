@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using System.Configuration;
 
 namespace CodingTrackerV2
 {
@@ -6,24 +7,53 @@ namespace CodingTrackerV2
     {
         // static InfoController control = new InfoController();
 
-        internal void CreateTable(string connectionString)
+        internal void CreateTable(string connectionStringRequest)
         {
-            using (var connection = new SqliteConnection(connectionString))
+            if (connectionStringRequest.Equals(ConfigurationManager.AppSettings.Get("connectionString")))
             {
-                using (var tableCommand = connection.CreateCommand())
+                using (var connection = new SqliteConnection(connectionStringRequest))
                 {
-                    connection.Open();
+                    using (var tableCommand = connection.CreateCommand())
+                    {
+                        connection.Open();
 
-                    tableCommand.CommandText = 
-                        @"CREATE TABLE IF NOT EXISTS coding (
+                        tableCommand.CommandText =
+                            @"CREATE TABLE IF NOT EXISTS coding (
                             Id INTEGER PRIMARY KEY AUTOINCREMENT,
                             Date TEXT,
                             Duration TEXT
                         )";
 
-                    tableCommand.ExecuteNonQuery();
+                        tableCommand.ExecuteNonQuery();
+                    }
+                }
+            } else if (connectionStringRequest.Equals(ConfigurationManager.AppSettings.Get("connectionStringGoals")))
+            {
+                using (var connection = new SqliteConnection(connectionStringRequest))
+                {
+                    using (var tableCommand = connection.CreateCommand())
+                    {
+                        connection.Open();
+
+                        tableCommand.CommandText =
+                            @"CREATE TABLE IF NOT EXISTS goals (
+                            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            EndDate TEXT,
+                            Type TEXT
+                        )";
+
+                        tableCommand.ExecuteNonQuery();
+                    }
                 }
             }
+        }
+
+        public enum goalType
+        {
+            Daily,
+            Weekly,
+            Monthly,
+            Yearly
         }
 
 

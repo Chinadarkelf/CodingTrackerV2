@@ -8,7 +8,12 @@ namespace CodingTrackerV2.Data
 {
     internal class RepoController
     {
-        string connectionString = ConfigurationManager.AppSettings.Get("connectionString");
+        string connectionString = "";
+
+        public RepoController(string connectionString)
+        {
+            this.connectionString = connectionString;
+        }
 
         internal void Delete(int idToDelete)
         {
