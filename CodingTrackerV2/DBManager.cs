@@ -38,7 +38,9 @@ namespace CodingTrackerV2
                         tableCommand.CommandText =
                             @"CREATE TABLE IF NOT EXISTS goals (
                             Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            EndDate TEXT,
+                            hours INTEGER,
+                            startDate TEXT,
+                            endDate TEXT,
                             Type TEXT
                         )";
 
@@ -47,15 +49,5 @@ namespace CodingTrackerV2
                 }
             }
         }
-
-        public enum goalType
-        {
-            Daily,
-            Weekly,
-            Monthly,
-            Yearly
-        }
-
-
     }
 }

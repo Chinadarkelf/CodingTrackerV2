@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Data\RepoController.cs" />
     <Compile Include="Data\TableVisualization.cs" />
+    <Compile Include="DateTimeCalculator.cs" />
     <Compile Include="DBManager.cs" />
     <Compile Include="InfoController.cs" />
     <Compile Include="Models\CodeBlock.cs" />
