@@ -92,7 +92,9 @@ namespace CodingTrackerV2.Data
                                         Hours = reader.GetInt32(1),
                                         startDate = reader.GetString(2),
                                         endDate = reader.GetString(3),
-                                        Type = reader.GetString(4)
+                                        Type = reader.GetString(4),
+                                        IsActive = DateTimeCalculator.Status(reader.GetString(2), reader.GetString(3)),
+                                        Progress = reader.GetInt32(6)
                                     });
                                 }
                             } else
@@ -184,24 +186,7 @@ namespace CodingTrackerV2.Data
         internal string Filter(List<String> filters, List<String> columns, string table)
         {
             // String builder method. Returns full commandText string for tableCmd in Get()
-            string returnString = $"SELECT * FROM {table}";
-
-            if (columns.Count == 0)
-            {
-                return returnString;
-            } else
-            {
-                returnString += " WHERE";
-            }
-
-            for (int i = 0; i < columns.Count; i++)
-            {
-                returnString += $" {columns[i]} = {filters[i]}";
-                if (i >= 1)
-                {
-                    returnString += ",";
-                }
-            }
+            throw new NotImplementedException();
         }
 
 

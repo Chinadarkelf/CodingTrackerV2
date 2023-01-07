@@ -290,9 +290,6 @@ namespace CodingTrackerV2
                         goalBlock.Type = typeInput;
                         goalBlock.Hours = hours;
 
-                        // DETERMINE STATUS -- Does current datetime fall within startdate and enddate?
-                        goalBlock.IsActive = DateTimeCalculator.Status(startDateInput, endDateInput);
-
                         //DETERMINE PROGRESS -- Pull information from tracker.db to determine how many hours have been accounted for during goal period
 
 
@@ -316,7 +313,9 @@ namespace CodingTrackerV2
                 repo.Get("goals");
             }
 
-            Console.WriteLine("\nPress any key to return to menu");
+            Console.WriteLine(@"Want to filter/adjust the table? Type h followed by the columns you want to hide
+Or type f followed by the column you want to filter. You will be prompted for
+The bounds you want to filter to. Type 0 to exit to menu.");
             Console.ReadLine();
         }
     }

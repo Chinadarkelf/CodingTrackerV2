@@ -41,7 +41,9 @@ namespace CodingTrackerV2
                             hours INTEGER,
                             startDate TEXT,
                             endDate TEXT,
-                            Type TEXT
+                            Type TEXT,
+                            IsActive BOOL,
+                            Progress INTEGER
                         )";
 
                         tableCommand.ExecuteNonQuery();
