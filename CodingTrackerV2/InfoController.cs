@@ -2,6 +2,7 @@
 using CodingTrackerV2.Models;
 using System;
 using System.Configuration;
+using System.Data;
 using System.Globalization;
 
 namespace CodingTrackerV2
@@ -176,52 +177,117 @@ namespace CodingTrackerV2
             return $"Developer! Did you enter the wrong request string? Error getting {request}";
         }
 
+        // REFORMATTING -- Get the CodeBlock object you are updating, and update the fields as requested
         private void RecordUpdate(string connectionString)
         {
-            CodeBlock codeBlock = new CodeBlock();
+            object obj = new object();
+
             RepoController repo = new RepoController(connectionString);
             RecordView(connectionString);
 
             Console.WriteLine("\nPlease enter the id of the record you wish to update");
             int idToUpdate = Int32.Parse(GetUserInput("Get Id"));
 
-            Console.WriteLine("\nWhich column would you like to update? Type 'd' for date, 't' for duration, 's' for all, or 'q' to exit to main menu: ");
-            string choice = Console.ReadLine();
+            obj = repo.Get(idToUpdate);
 
-            string dateInput = "";
-            string durationInput = "";
-
-            switch (choice)
+            if (connectionString.Equals(ConfigurationManager.AppSettings.Get("connectionString")))
             {
-                case "d":
-                    Console.WriteLine("\nPlease enter the date (format: dd-mm-yy). If nothing is entered, the current system time will be logged: ");
-                    dateInput = GetUserInput("Get Date");
+                CodeBlock blockToUpdate = (CodeBlock)obj;
+                Console.WriteLine("\nWhich column would you like to update? Type 'd' for date, 't' for duration, 's' for all, or 'q' to exit to main menu: ");
+                string choice = Console.ReadLine();
+                string dateInput = "";
+                string durationInput = "";
 
-                    codeBlock.Date = dateInput;
-                    repo.Update(idToUpdate, codeBlock, choice);
-                    break;
-                case "t":
-                    Console.WriteLine("\nPlease enter the duration of the session (format hh:mm). Enter 0 to return to menu.");
-                    durationInput = GetUserInput("Get Duration");
+                switch (choice)
+                {
+                    case "d":
+                        Console.WriteLine("\nPlease enter the date (format: dd-mm-yy). If nothing is entered, the current system time will be logged: ");
+                        dateInput = GetUserInput("Get Date");
 
-                    codeBlock.Duration = durationInput;
-                    repo.Update(idToUpdate, codeBlock, choice);
-                    break;
-                case "s":
-                    Console.WriteLine("\nPlease enter the date (format: dd-mm-yy). If nothing is entered, the current system time will be logged: ");
-                    dateInput = GetUserInput("Get Date");
+                        blockToUpdate.Date = dateInput;
+                        break;
+                    case "t":
+                        Console.WriteLine("\nPlease enter the duration of the session (format hh:mm). Enter 0 to return to menu.");
+                        durationInput = GetUserInput("Get Duration");
 
-                    Console.WriteLine("\nPlease enter the duration of the session (format hh:mm). Enter 0 to return to menu.");
-                    durationInput = GetUserInput("Get Duration");
+                        blockToUpdate.Duration = durationInput;
+                        break;
+                    case "s":
+                        Console.WriteLine("\nPlease enter the date (format: dd-mm-yy). If nothing is entered, the current system time will be logged: ");
+                        dateInput = GetUserInput("Get Date");
 
-                    codeBlock.Date = dateInput;
-                    codeBlock.Duration = durationInput;
-                    repo.Update(idToUpdate, codeBlock, choice);
-                    break;
-                case "q":
-                    break;
+                        Console.WriteLine("\nPlease enter the duration of the session (format hh:mm). Enter 0 to return to menu.");
+                        durationInput = GetUserInput("Get Duration");
+
+                        blockToUpdate.Date = dateInput;
+                        blockToUpdate.Duration = durationInput;
+                        break;
+                    case "q":
+                        break;
+                }
+                repo.Update(idToUpdate, blockToUpdate);
+            } else if (connectionString.Equals(ConfigurationManager.AppSettings.Get("connectionStringGoals")))
+            {
+                GoalBlock blockToUpdate = (GoalBlock)obj;
+                Console.WriteLine(
+                    @"Which column would you like to update? You can enter multiple columns - i.e. H S T
+                      (H)ours
+                      (S)tart Date
+                      (T)ype
+                      (A)ll");
+                string userInput = Console.ReadLine().Trim();
+
+                // For some reason needed just '' and not ""??
+                string[] colsToUpdate = userInput.Split(' ');
+
+                foreach (string column in colsToUpdate)
+                {
+                    switch (column)
+                    {
+                        case "H":
+                            Console.WriteLine("\nPlease enter how many hours you would like to complete in the given timespan (format: hh:mm): ");
+                            blockToUpdate.Hours = Int32.Parse(GetUserInput("Get Goal Duration"));
+                            break;
+                        case "S":
+                            Console.WriteLine("\nPlease enter the start date of your goal. If nothing is entered, the current system time will be given: ");
+                            blockToUpdate.startDate = GetUserInput("Get Date");
+                            blockToUpdate.endDate = DateTimeCalculator.CalculateEndDate(blockToUpdate.Type, blockToUpdate.startDate);
+                            Console.WriteLine($@"\nCurrent goal type is {blockToUpdate.Type}. New end date will be {blockToUpdate.endDate}.
+                                                 Enter any key to continue.");
+                            Console.ReadLine();
+                            break;
+                        case "T":
+                            Console.WriteLine("\nPlease enter the type of goal (format: daily, weekly, monthly, yearly). Enter 0 to return to menu: ");
+                            blockToUpdate.Type = GetUserInput("Get Type");
+                            blockToUpdate.endDate = DateTimeCalculator.CalculateEndDate(blockToUpdate.Type, blockToUpdate.startDate);
+                            Console.WriteLine($@"\nCurrent start date is {blockToUpdate.startDate}. New end date will be {blockToUpdate.endDate}.
+                                                 Enter any key to continue.");
+                            Console.ReadLine();
+                            break;
+                        case "A":
+                            // HOURS
+                            Console.WriteLine("\nPlease enter how many hours you would like to complete in the given timespan (format: hh:mm): ");
+                            blockToUpdate.Hours = Int32.Parse(GetUserInput("Get Goal Duration"));
+
+                            // START DATE
+                            Console.WriteLine("\nPlease enter the start date of your goal. If nothing is entered, the current system time will be given: ");
+                            blockToUpdate.startDate = GetUserInput("Get Date");
+
+                            // TYPE
+                            Console.WriteLine("\nPlease enter the type of goal (format: daily, weekly, monthly, yearly). Enter 0 to return to menu: ");
+                            blockToUpdate.Type = GetUserInput("Get Type");
+
+                            // END DATE
+                            blockToUpdate.endDate = DateTimeCalculator.CalculateEndDate(blockToUpdate.Type, blockToUpdate.startDate);
+                            Console.WriteLine($@"Current start date is {blockToUpdate.startDate} and the type is {blockToUpdate.Type}.
+                                                 New end date will be {blockToUpdate.endDate}.
+                                                 Enter any key to continue.");
+                            Console.ReadLine();
+                            break;
+                    }
+                }
+                repo.Update(idToUpdate, blockToUpdate);
             }
-
         }
 
         private void RecordDelete(string connectionString)
@@ -260,7 +326,7 @@ namespace CodingTrackerV2
                     codeBlock.Date = dateInput;
                     codeBlock.Duration = durationInput;
 
-                    repo.Post(codeBlock, "coding");
+                    repo.Post(codeBlock);
                     break;
 
                 case false:
@@ -292,8 +358,7 @@ namespace CodingTrackerV2
 
                         //DETERMINE PROGRESS -- Pull information from tracker.db to determine how many hours have been accounted for during goal period
 
-
-                        repoGoals.Post(goalBlock, "goals");
+                        repoGoals.Post(goalBlock);
                     }
                     
                     break;
@@ -307,15 +372,15 @@ namespace CodingTrackerV2
 
             if (connectionString.Equals(ConfigurationManager.AppSettings.Get("connectionString")))
             {
-                repo.Get("coding");
+                repo.Get();
             } else if (connectionString.Equals(ConfigurationManager.AppSettings.Get("connectionStringGoals")))
             {
-                repo.Get("goals");
+                repo.Get();
             }
 
-            Console.WriteLine(@"Want to filter/adjust the table? Type h followed by the columns you want to hide
-Or type f followed by the column you want to filter. You will be prompted for
-The bounds you want to filter to. Type 0 to exit to menu.");
+            Console.WriteLine(@"Want to filter/adjust the table? Type h followed by the columns you want to hide.
+Type f followed by the column, followed by 'a' or 'd' (ascending/descending) to sort a column.
+Type 0 to exit to menu.");
             Console.ReadLine();
         }
     }

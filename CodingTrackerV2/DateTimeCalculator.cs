@@ -39,5 +39,20 @@ namespace CodingTrackerV2
                 return false;
             }
         }
+
+        internal static bool StatusOfTracker(string toPullDate, string goalStart, string goalEnd)
+        {
+            DateTime pullDate = DateTime.Parse(toPullDate);
+            DateTime dtStart = DateTime.Parse(goalStart);
+            DateTime dtEnd = DateTime.Parse(goalEnd);
+
+            if (pullDate >= dtStart && pullDate < dtEnd)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
     }
 }
