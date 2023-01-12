@@ -52,7 +52,7 @@ namespace CodingTrackerV2
                         RecordAdd(trackerString);
                         break;
                     case "4":
-                        RecordDelete(trackerString);
+                        RecordDelete(trackerString, "coding");
                         break;
                     case "5":
                         RecordUpdate(trackerString);
@@ -100,10 +100,10 @@ namespace CodingTrackerV2
                     RecordAdd(goalsString);
                     break;
                 case "4":
-                    RecordDelete(goalsString); // NOT IMPLEMENTED
+                    RecordDelete(goalsString, "goals");
                     break;
                 case "5":
-                    RecordUpdate(goalsString); // NOT IMPLEMENTED
+                    RecordUpdate(goalsString);
                     break;
                 default:
                     // Console.WriteLine($"{command}"); // DEBUG
@@ -290,7 +290,7 @@ namespace CodingTrackerV2
             }
         }
 
-        private void RecordDelete(string connectionString)
+        private void RecordDelete(string connectionString, string tableToUpdate)
         {
             RepoController repo = new RepoController(connectionString);
             RecordView(connectionString);
@@ -298,7 +298,7 @@ namespace CodingTrackerV2
             Console.WriteLine("\nPlease enter the id you wish to delete: ");
             int idToDelete = Int32.Parse(GetUserInput("Get Id"));
 
-            repo.Delete(idToDelete, "coding");
+            repo.Delete(idToDelete, tableToUpdate);
         }
 
         private void RecordAdd(string connectionString)

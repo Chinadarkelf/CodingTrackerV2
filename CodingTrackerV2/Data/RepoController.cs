@@ -278,7 +278,5 @@ namespace CodingTrackerV2.Data
             }
             
         }
-
-
     }
 }
